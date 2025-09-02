@@ -6,77 +6,78 @@ import mongoose from "mongoose";
 import { FoodProductItem } from "../models/product.model.js";
 
 // Auth user adding product cart. 
+
 export const authUserAddingProductCart = async (req, res) => {
     try {
-        const value = await cartSchemaValidation.validateAsync(req.body);
 
-        const { userId, items } = value;
-        const [{ productId, price, quantity }] = items;
+       const value = await cartSchemaValidation.validateAsync(req.body);
+       const { userId, items:[{ productId, quantity }] } = value;
+       const isValidUserId = mongoose.Types.ObjectId.isValid(userId);
+       const isValidProductId = mongoose.Types.ObjectId.isValid(productId);
 
-        const isUserIdValid = mongoose.Types.ObjectId.isValid(userId);
-        const isProductIdValid = mongoose.Types.ObjectId.isValid(productId);
-
-       if(!isUserIdValid || !isProductIdValid) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid user or product id."
-            })
-       }       
-
-        if(req.user != userId) {
-        return res.status(401).json({
+       if(!isValidUserId || !isValidProductId) return res.status(400).json({
             success: false,
-            message: "only authorized user can add a cart."
-        })
-    }
-
-    const isProductCartAlreadyExist = await Cart.findById(productId);
-    
-    if(isProductCartAlreadyExist) {
-       const [{ quantity  }] = isProductCartAlreadyExist.items;
-       isProductCartAlreadyExist.items = [{
-        quantity: quantity + quantity + 1
-       }]
-    
-    }
-
-       const foodId = await FoodProductItem.findById(productId);
-       if(!foodId) {
-            return res.status(400).json({
-                success: false,
-                message: "this food item cannot added into the cart list."
-            })
-       }      
-
-       const productCart = await Cart.create({
-        userId,
-        items: {
-            productId,
-            price,
-            quantity
-        }
+            message: "Invalid user or product id."
        })
 
-       if(!productCart) {
-            return res.status(400).json({
-                success: false,
-                message: "failed to add cart."
+       if(req.user != userId) return res.status(401).json({
+            success: false,
+            message: "Only auth user can add product into cart."
+       })
+
+       const food = await FoodProductItem.findById(productId);
+       if(!food) return res.status(400).json({
+            success: false,
+            message: "this food product can not be add into the cart."
+       })
+
+       const cart = await Cart.findOne({ userId });
+
+       if(!cart) {
+            const newCart = await Cart.create({
+                userId,
+                items: [{
+                    productId,
+                    price: food.price,
+                    quantity,
+                    subTotal: food.price * quantity
+                }],
+                totalAmount: food.price * quantity
+            })
+
+            return res.status(201).json({
+                success: true,
+                message: "Cart added successfully.",
+                newCart: newCart
             })
        }
-       
-       res.status(200).json({
-            success: true,
-            message: "cart added successfully"
-       })
-       
 
+    
+       const isProductItemExsitInCart = cart.items.find((item) => item.productId.toString() === productId); 
+        console.log(`isProductExsitInCartItem: ${isProductItemExsitInCart}`);
+               
+       
+       if(isProductItemExsitInCart) {
+          
+            isProductItemExsitInCart.quantity += quantity;
+            isProductItemExsitInCart.subTotal = isProductItemExsitInCart.quantity * isProductItemExsitInCart.price;
+
+             cart.totalAmount = cart.items.reduce((acc, item) => acc + item.subTotal, 0);
+            await cart.save();
+        }
+
+
+        return res.status(200).json({
+            success: true,
+            cartList: cart 
+        })
+      
     } catch (error) {
         res.status(500).json({
             success: false,
             message: `server error something went wrong : ${error}`
         })
-
-        console.log(`error while auth user adding cart : ${error}`);
+        console.log(`error while auth user adding product cart : ${error}`);
         
     }
 }
@@ -93,7 +94,6 @@ export const authUserUpdatingProductCart = async (req, res) => {
          const isCartIdValid = mongoose.Types.ObjectId.isValid(cartId);
          const isUserIdValid = mongoose.Types.ObjectId.isValid(userId);
          const isProductIdValid = mongoose.Types.ObjectId.isValid(productId);
-
 
          if(!isUserIdValid || !isProductIdValid || !isCartIdValid) {
             return res.status(400).json({
