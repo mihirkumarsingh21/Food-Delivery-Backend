@@ -22,13 +22,14 @@ export const authUserAddingProductCart = async (req, res) => {
 
        if(req.user != userId) return res.status(401).json({
             success: false,
-            message: "Only auth user can add product into cart."
+            message: "You don't have a permission to add a product into cart."
        })
 
        const food = await FoodProductItem.findById(productId);
+
        if(!food) return res.status(400).json({
             success: false,
-            message: "this food product can not be add into the cart."
+            message: "this food product cannot be add into the cart."
        })
 
        const cart = await Cart.findOne({ userId });
@@ -51,21 +52,29 @@ export const authUserAddingProductCart = async (req, res) => {
                 newCart: newCart
             })
        }
-
-    
        const isProductItemExsitInCart = cart.items.find((item) => item.productId.toString() === productId); 
-        console.log(`isProductExsitInCartItem: ${isProductItemExsitInCart}`);
+        // console.log(`isProductExsitInCartItem: ${isProductItemExsitInCart}`);
                
-       
        if(isProductItemExsitInCart) {
           
             isProductItemExsitInCart.quantity += quantity;
             isProductItemExsitInCart.subTotal = isProductItemExsitInCart.quantity * isProductItemExsitInCart.price;
 
              cart.totalAmount = cart.items.reduce((acc, item) => acc + item.subTotal, 0);
-            await cart.save();
+        } else {
+            
+            cart.items.push({
+                productId,
+                quantity,
+                price: food.price,
+                subTotal: food.price * quantity
+            })
+
+            cart.totalAmount = cart.items.reduce((acc, item) => acc + item.subTotal, 0);
+            
         }
 
+            await cart.save();
 
         return res.status(200).json({
             success: true,
@@ -78,7 +87,20 @@ export const authUserAddingProductCart = async (req, res) => {
             message: `server error something went wrong : ${error}`
         })
         console.log(`error while auth user adding product cart : ${error}`);
+    }
+}
+
+// Auth user clear the food items from cart.
+
+export const authUserClearProductCart = async (req, res) => {
+    try {
         
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong : ${error}`
+        })
+        console.log(`error while auth user clear the food carts : ${error}`);
     }
 }
 
@@ -124,11 +146,10 @@ export const authUserUpdatingProductCart = async (req, res) => {
             quantity
          }]}, {new: true});
 
-
          if(!updatedCart) {
             return res.status(400).json({
                 success: false,
-                message: "failed to update cart details or the provided cart id in params are not exits in db."
+                message: "failed to update cart details"
             })
          }
                   
