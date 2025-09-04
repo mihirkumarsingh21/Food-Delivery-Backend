@@ -94,13 +94,75 @@ export const authUserAddingProductCart = async (req, res) => {
 
 export const authUserClearProductCart = async (req, res) => {
     try {
-        
+        const userId = req.user;
+        const cart = await Cart.findOne({userId});
+        if(cart) {
+            cart.items = [];
+            cart.totalAmount = 0;
+        } else {
+            res.send("cart already empty.")
+        }
+
+        await cart.save();
+
+        res.status(200).json({
+            success: true,
+            message: "cart clear successfully."
+        })
+
     } catch (error) {
         res.status(500).json({
             success: false,
             message: `server error something went wrong : ${error}`
         })
         console.log(`error while auth user clear the food carts : ${error}`);
+    }
+}
+
+// Auth user clear one food item from cart.
+
+export const authUserClearOneProductCart = async (req, res) => {
+    try {
+            const { cartId } = req.params;
+            const { productId } = req.params;
+
+            const isValidCartId = mongoose.Types.ObjectId.isValid(cartId);
+            const isValidProductId = mongoose.Types.ObjectId.isValid(productId);
+
+            if(!isValidCartId || !isValidProductId) return res.status(400).json({ success: false, message: "Invalid cart or product id." })
+
+            const cart = await Cart.findById(cartId);
+            if(!cart) return res.status(404).json({ success: false, message: "cart not found."})
+                
+            const isProductExsitInCartItem = cart.items.find((item) => item.productId.toString() === productId);
+
+            if(isProductExsitInCartItem) {
+                const updatedCart = await Cart.updateOne({_id: cartId}, { $pull: {items: {productId: productId}} });                
+                cart.totalAmount = cart.items.reduce((acc, item) => {
+                acc + item.subTotal;
+
+            }, 0)            
+
+            await cart.save();
+       
+            res.status(200).json({
+                success: 200,
+                updatedCart: updatedCart
+            })
+
+            } else {
+               return res.status(400).json({
+                success: false,
+                message: "this food item are not in cart."
+            }
+         )}
+          
+    
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong: ${error}`
+        })
     }
 }
 
@@ -169,12 +231,12 @@ export const authUserUpdatingProductCart = async (req, res) => {
         
     }
 }
-
 // Auth user remove product cart.
 
 export const authUserRemoveProductCart = async (req, res) => {
     try {
         const { cartId } = req.params;
+        
         const isCartIdValid = mongoose.Types.ObjectId.isValid(cartId);
         if(!isCartIdValid) {
             return res.status(400).json({
