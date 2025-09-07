@@ -4,7 +4,10 @@ export const owner = async (req, res, next) => {
     try {
        const authenticatedUser = await User.findById({_id: req.user});
 
-       if(authenticatedUser.role !== "owner") {
+       const authenticatedUser = await User.findById({ _id: req.user });
+       const restaurantOwner = await User.findOne({role: "owner"});  
+
+       if(restaurantOwner.role === "customer" || authenticatedUser.role === "owner") {
             return res.status(403).json({
                 success: false,
                 message: "Access denied : Only owner have access."
