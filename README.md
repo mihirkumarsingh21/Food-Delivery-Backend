@@ -1,6 +1,6 @@
 # 🍴 Food Delivery App - Backend  
 
-A complete **Food Delivery Backend API** built with **Node.js, Express, MongoDB, and Mongoose**.  
+A **Food Delivery Backend API** built with **Node.js, Express, MongoDB, and Mongoose**.  
 It includes **authentication, cart management, food products, categories, orders, and more**.  
 All APIs are tested with **Postman** 🚀.  
 
