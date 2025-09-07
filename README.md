@@ -115,7 +115,7 @@ All APIs are tested with **Postman** 🚀.
 
 ### 1️⃣ Clone Repo  
 ```bash
- https://github.com/mihirkumarsingh21/food-delivery-app-backend.git](https://github.com/mihirkumarsingh21/Food-Delivery-Backend.git)
+ https://github.com/mihirkumarsingh21/food-delivery-app-backend.git
 cd food-delivery-app-backend](https://github.com/mihirkumarsingh21/Food-Delivery-Backend.git)
 ```
 
@@ -135,7 +135,7 @@ EMAIL_PASS=your_password
 ## Setup  
 
 ```bash
-(https://github.com/mihirkumarsingh21/Food-Delivery-Backend.git)
+https://github.com/mihirkumarsingh21/Food-Delivery-Backend.git
 cd backend
 npm install
 npm run server
