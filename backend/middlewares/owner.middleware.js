@@ -2,8 +2,7 @@ import { User } from "../models/user.model.js"
 
 export const owner = async (req, res, next) => {
     try {
-       const authenticatedUser = await User.findById({_id: req.user});
-
+        
        const authenticatedUser = await User.findById({ _id: req.user });
        const restaurantOwner = await User.findOne({role: "owner"});  
 
@@ -13,6 +12,11 @@ export const owner = async (req, res, next) => {
                 message: "Access denied : Only owner have access."
             })
        }
+       
+       console.log(`customer: ${authenticatedUser}`);
+       
+       console.log(`owner: ${restaurantOwner}`);
+       
 
        next();
   
