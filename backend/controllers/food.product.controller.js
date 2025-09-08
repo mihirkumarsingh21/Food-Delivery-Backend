@@ -115,6 +115,7 @@ export const gettingAllFoodItems = async (req, res) => {
         }
 
         const foodItems = await FoodProductItem.paginate({}, options);
+        
 
         if(!foodItems) {
             return res.status(400).json({
@@ -231,8 +232,6 @@ export const filteringFoodItemsByCategory = async (req, res) => {
         
     }
 }
-
-
 
 // Filter food items by price.
 
@@ -352,7 +351,6 @@ export const gettingFoodItemsBySearching = async (req, res) => {
     try {
         const { name, description } = req.query;
         
-        console.table([name, description]);
         const foodItems = await FoodProductItem.find({
             $or: [
                 { name: { $regex: name, $options: "i" } },
@@ -380,6 +378,37 @@ export const gettingFoodItemsBySearching = async (req, res) => {
 
         console.log(`error while getting food items by searching : ${error}`);
         
+    }
+}
+
+// Getting food list.
+
+export const gettingFoodList = async (req, res) => {
+    try {
+
+        const { price, name } = req.query;
+        const foods = await FoodProductItem.find({
+            $or: [
+                {
+                    price
+                },
+                {
+                    name
+                }
+            ]
+        }).populate("category")
+
+        if(!foods) return res.status(404).json({success: false, message: "food not found."});
+
+     
+
+        res.status(200).json({
+            success: true,
+            foodList: foods
+        })
+
+     } catch (error) {
+        res.status(500).json({ success: false, message: `server error something went wrong : ${error}`})
     }
 }
 
