@@ -1,5 +1,5 @@
 import express from "express";
-import { addingFoodItems, updatingFoodItems, gettingAllFoodItems, gettingSingleFoodItem, filteringFoodItemsByCategory, filteringFoodItemsByPrice, foodItemsWithCategory, gettingFoodsWithNameAndPrice, gettingFoodItemsBySearching } from "../controllers/food.product.controller.js";
+import { addingFoodItems, updatingFoodItems, gettingAllFoodItems, gettingSingleFoodItem, filteringFoodItemsByCategory, filteringFoodItemsByPrice, foodItemsWithCategory, gettingFoodsWithNameAndPrice, gettingFoodItemsBySearching, gettingFoodList } from "../controllers/food.product.controller.js";
 import { authProtect } from "../middlewares/auth.middleware.js";
 import { owner } from "../middlewares/owner.middleware.js";
 
@@ -16,6 +16,8 @@ router.get("/foods/category", foodItemsWithCategory);
 
 router.get("/foods/fields", gettingFoodsWithNameAndPrice);
 router.get("/foods/search", gettingFoodItemsBySearching);
+router.get("/foods/food-list", gettingFoodList);
+
 
 
 
