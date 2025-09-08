@@ -61,6 +61,7 @@ export const authUserAddingProductCart = async (req, res) => {
             isProductItemExsitInCart.subTotal = isProductItemExsitInCart.quantity * isProductItemExsitInCart.price;
 
              cart.totalAmount = cart.items.reduce((acc, item) => acc + item.subTotal, 0);
+
         } else {
             
             cart.items.push({
@@ -96,9 +97,11 @@ export const authUserClearProductCart = async (req, res) => {
     try {
         const userId = req.user;
         const cart = await Cart.findOne({userId});
+        
         if(cart) {
-            cart.items = [];
-            cart.totalAmount = 0;
+
+            await Cart.updateOne({userId: userId}, {$set: { items: [], totalAmount: 0 }});
+
         } else {
             res.send("cart already empty.")
         }
@@ -306,3 +309,46 @@ export const authUserGettingProductCart = async (req, res) => {
     }
 }
 
+
+export const authUserListingCarts = async ( req, res )  => {
+    try {
+
+        const { page = 1, limit = 2 } = req.query;
+         if(page <= 0 || limit <= 0) return res.status(400).json({ success: false, message: "page or limit value must be greater than 0"});
+    
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            populate: {
+                path: "userId", select: ["name", ""]
+            }
+        }
+
+        const cart = await Cart.paginate({ userId: req.user }, options);
+
+        if(!cart) return res.status(404).json({ success: false, message: "cart not found."});
+       
+        res.status(200).json({ success: true, cartList: cart.docs });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong: ${error}`
+        })
+        console.log(`error while auth user listing carts: ${error}`);
+        
+    }
+}
+
+
+export const authUserFilterCarts = async ( req, res ) => {
+    try {
+        const userId = req.user;
+        await Cart.createIndexes({userId: 1});
+        const cart = await Cart.find({userId});
+        if(!cart) return res.status(400).json({success: false, message: "cart not found."});
+        res.status(200).json({success: true, filterCarts: cart})
+    } catch (error) {
+        res.status(500).json({ success: false, message: `sever error something went wrong: ${error}`})
+    }
+}
