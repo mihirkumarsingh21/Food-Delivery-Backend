@@ -53,11 +53,14 @@ export const authUserMakingOrder = async (req, res) => {
             changeBy: "owner"
        })
        res.status(200).json({ success: true, message: "Your order successfully.", orderedFood: orderedFood });
-       cart.items = [];
-       cart.totalAmount = 0;
 
-    
-       await orderedFood.save();
+       await Cart.findByIdAndUpdate(cartId, {
+            $set: {
+                items: [],
+                totalAmount: 0
+            }
+       }, { new: true })
+
 
     } catch (error) {
         res.status(500).json({
@@ -153,7 +156,7 @@ export const gettingOrderHistory = async (req, res) => {
 export const authUserGettingAllOrderFoodList = async (req, res) => {
     try {
 
-        const { page=1, limit=2 } = req.query;
+        const { page= 1, limit= 2 } = req.query;
         const parsePage = parseInt(page);
         const parseLimit = parseInt(limit);
 
@@ -164,14 +167,11 @@ export const authUserGettingAllOrderFoodList = async (req, res) => {
             })
         }
         
-
         const options = {
             page: parsePage,
             limit: parseLimit,
             sort: { order: 1 }
         }
-
-
 
         const order = await Order.find({userId: req.user}).paginate({}, options);
         if(!order) return res.status(404).json({ success: fasle, message: "food not found." });
@@ -214,16 +214,24 @@ export const authUserGettingOrderFoodListBySearching = async (req, res) => {
 export const ownerListedOrderFood = async (req, res) => {
     
     try {
-        const order = await Order.findOne({userId: req.user})
-        .populate("userId", "name email profile-pic role isVerified")
-        .populate("items.productId", "name description price isAvailable");
 
-        if(!order) return res.status(404).json({success: false, message: "Ordered food not found."});
+        const { page = 1, limit = 2 } = req.query;
+
+        if(page <= 0 || limit <= 0) return res.status(400).json({ success: false, message: "page or limit must be greater than 0"});
+
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            populate: { path: "userId items.productId", select: [ "name", "email", "isVerified", "role" ,"description", "price", "isAvailable"  ]},
+        }
+        
+        const orders =  await Order.paginate({}, options);
+        
+        if(!orders) return res.status(404).json({success: false, message: "Ordered food not found."});
 
         res.status(200).json({
             success: true,
-            orderedFood: order
-
+            orderedFood: orders.docs
         })
 
     } catch (error) {
@@ -232,3 +240,56 @@ export const ownerListedOrderFood = async (req, res) => {
         
     }
 }
+
+
+export const ownerSortedOrderFood = async ( req, res) => {
+    try {
+            const { sortBy, order } = req.query;
+
+
+            const options = {
+                sort: { createdAt: sortBy, createdAt: order },
+                
+            }
+
+            const orders = await Order.paginate({}, options);
+            if(!orders) return res.status(404).json({ success: false, message: "order food not found."});
+
+            
+
+            res.status(200).json({ success: true, sortedOrderList: orders});
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong: ${error}`
+        })
+        console.log(`error while owner sorted order food: ${error}`);
+
+    }
+}  
+
+export const ownerFilterOrderFood = async ( req, res ) => {
+        try {
+            const { orderStatus } = req.query;
+              await Order.createIndexes({userId: 1, orderStatus: 1, createdAt: 1});
+        
+            const order = await Order.find({ orderStatus: { $regex: orderStatus, $options: "i" }});
+
+            
+            if(!order) return res.status(404).json({ success: false, message: "order not found : you don't have any order list with this order status." });
+
+            res.status(200).json({ success: true, filterOrderList: order });
+        
+        } catch (error) {
+            res.status(500).json({ success: false, message: `server error something went wrong: ${error}`})
+        }
+}
+
+
+
+
+
+
+
+
