@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import  mongoosePaginate  from "mongoose-paginate-v2";
 
 const cartSchema = new mongoose.Schema({
 
@@ -22,11 +23,21 @@ const cartSchema = new mongoose.Schema({
         quantity: {
             type: Number,
             default: 1
+        },
+        
+        subTotal: {
+            type: Number
         }
-    }]
+    }],
+
+        totalAmount: {
+            type: Number
+        }
 
 
 }, {timestamps: true});
+
+cartSchema.plugin(mongoosePaginate);
 
 
 export const Cart = mongoose.model("Cart", cartSchema);
