@@ -8,16 +8,28 @@ import foodItemsRoute from "./routes/food.product.route.js";
 import authUserProfile from "./routes/user.profile.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import deliveryBoyRoute from "./routes/deliveryBoy.route.js"
 
 
 dotenv.config();
-const app = express();
+const app = express(); 
 
-
+const limiter = rateLimit({
+    windowMs: 1000 * 60,
+    limit: 3,
+    statusCode: 429,
+    message: "Too many requests, please try again later."
+})
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieParser())
+
+app.use(helmet());
+
+app.use(limiter);
 
 app.use("/api/v1", authRoute);
 app.use("/api/v1/profiles", authUserProfile)
@@ -25,8 +37,7 @@ app.use("/api/v1/food-category", categoryRoute);
 app.use("/api/v1/food-items", foodItemsRoute);
 app.use("/api/v1/carts", cartRoute);
 app.use("/api/v1/orders", orderRoute);
-
-
+app.use("/api/v1/delivery-boy", deliveryBoyRoute);
 
 
 const PORT = process.env.PORT || 3000;
