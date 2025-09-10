@@ -1,5 +1,8 @@
+import mongoose from "mongoose";
 import { DeliveryBoy } from "../models/deliveryBoy.model.js";
+import { User } from "../models/user.model.js";
 import { deliveryBoySchemaValidation } from "../validations/deliveryBoy.validation.js";
+import { Order } from "../models/order.model.js";
 
 export const addingDeliveryBoyDetails = async (req, res) => {
     try {
@@ -41,3 +44,96 @@ export const addingDeliveryBoyDetails = async (req, res) => {
         
     }
 }
+
+export const givingDeliveryRole = async (req, res) => {
+    try {
+        const user = await User.findById(req.user);
+
+        if(user.role != "delivery") {
+
+              const updatedRole = await User.findByIdAndUpdate(req.user, { $set: { role: "delivery" }}, { new: true });
+
+              if(!updatedRole) return res.status(400).json({ success: false, message: "Failed to update role."});
+
+              res.status(201).json({
+                    success: true,
+                    updatedRole: updatedRole
+              })
+        }
+      
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong: ${error}`
+        })
+
+        console.log(`error while giving delivery role :${error}`);
+        
+    }
+}
+
+// Owner assign order food to delivery boy.
+
+export const ownerAssignOrderFoodToDeliveryBoy = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { deliveryBoyId } = req.body;
+
+        console.log(`orderId: ${orderId}`);
+        console.log(`deliveryBoyId: ${deliveryBoyId}`);
+        
+
+        const isValidOrderId = mongoose.Types.ObjectId.isValid(orderId);
+        if(!isValidOrderId) return res.status(400).json({
+            success: false,
+            message: "Invalid order id."
+        })
+
+        if(!deliveryBoyId) return res.status(400).json({
+            success: false, 
+            message: "please provide delivery boy id."
+        })
+
+        const order = await Order.findById(orderId);
+        if(!order) return res.status(404).json({
+            success: false,
+            message: "order not found."
+        })
+
+        const deliveryBoy = await User.findById(deliveryBoyId);
+        if(!deliveryBoy) return res.status(404).json({
+            success: false,
+            message: "delivery boy not found."
+        })
+
+        order.assignedTo = deliveryBoyId;
+        await order.save();
+        
+        res.status(200).json({
+            success: true,
+            assignedOrderToDeliveryBoy: order
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong :${error}`
+        })
+
+        console.log(`error while owner assign order food to delivery boy : ${error}`);
+        
+    }
+}
+ 
+// export const deliveryBoyUpdaingOrderStatus = async (req, res) => {
+//     try {
+//         const updatedOrderStatus = await Order
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             message: `server error something went wrong: ${error}`
+//         })
+//         console.log(`error while delivery`);
+        
+//     }
+// }
