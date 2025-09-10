@@ -33,7 +33,7 @@ const deliveryBoySchema = new mongoose.Schema({
 
    activeStatus: {
     type: Boolean,
-    default: false
+    default: true
    }
 
 
