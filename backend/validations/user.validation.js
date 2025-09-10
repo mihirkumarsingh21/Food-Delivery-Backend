@@ -5,7 +5,7 @@ export const userSchemaValidation = Joi.object({
 
     name: Joi.string()
     .min(4)
-    .max(10)
+    .max(30)
     .required(),
 
     password: Joi.string()
