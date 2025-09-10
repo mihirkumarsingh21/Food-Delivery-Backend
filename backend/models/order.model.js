@@ -6,7 +6,12 @@ const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Types.ObjectId,
         ref: "User",
-        // required: true
+    },
+
+    assignedTo: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        default: null
     },
 
     items: [
@@ -49,8 +54,13 @@ const orderSchema = new mongoose.Schema({
             required: true
         }
 
-     }]
-    ,
+     }],
+
+     deliveryPartnerId: {
+        type: mongoose.Types.ObjectId,
+        ref: "User"
+     },
+    
      orderStatus: {
         type: String,
         enum: [ "placed", "pending", "confirmed", "preparing", "out for delivery",  "delivered", "cancelled" ],
