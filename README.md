@@ -114,12 +114,12 @@ All APIs are tested with **Postman** 🚀.
 
 <summary>🚚 Delivery Boy Routes</summary>
 
-`POST   /api/v1/delivery/adding-details`  -> Add delivery boy details (User)
-`PATCH  /api/v1/delivery/role` -> Change user role to delivery boy (Owner only)
-`PATCH  /api/v1/delivery/orders/:orderId/assign` -> Assign order to a delivery boy (Owner only)
-`GET    /api/v1/delivery/deliveryBoy/:id/orders` -> Fetch all assigned orders (Delivery Boy)
-`PATCH  /api/v1/delivery/deliveryBoy/:id/order/status` -> Update assigned order status (Delivery Boy)
-`GET    /api/v1/delivery/:id/orderStatus` -> Fetch order status (Customer)
+- `POST   /api/v1/delivery/adding-details`  -> Add delivery boy details (User)
+- `PATCH  /api/v1/delivery/role` -> Change user role to delivery boy (Owner only)
+- `PATCH  /api/v1/delivery/orders/:orderId/assign` -> Assign order to a delivery boy (Owner only)
+- `GET    /api/v1/delivery/deliveryBoy/:id/orders` -> Fetch all assigned orders (Delivery Boy)
+- `PATCH  /api/v1/delivery/deliveryBoy/:id/order/status` -> Update assigned order status (Delivery Boy)
+- `GET    /api/v1/delivery/:id/orderStatus` -> Fetch order status (Customer)
 
 
 </details>
