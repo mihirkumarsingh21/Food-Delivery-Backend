@@ -287,6 +287,48 @@ export const ownerFilterOrderFood = async ( req, res ) => {
 }
 
 
+// auth user can see updated order status which is updated by delivery boy..
+
+export const orderStatus = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+        const isValidDeliveryBoyId = mongoose.Types.ObjectId.isValid(id);
+
+        if(!isValidDeliveryBoyId) return res.status(400).json({
+            success: false,
+            message: "Invalid delivery boy id."
+        })
+
+        const orderStatus = await Order.find({assignedTo: id});
+        if(!orderStatus) return res.json({
+            success: false,
+            message: "Failed to show order status."
+        })
+
+        
+        res.status(200).json({
+            success: true,
+            orderStatus:  orderStatus.map((status) => ({
+            orderStatus: status.orderStatus,
+            createdAt: status.createdAt
+        }) )
+        })
+        
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "server error something went wrong."
+        })
+
+        console.log(`error while auth user seeing updated order status by delivery boy: ${error}`);
+        
+    }
+}
+
+
+
 
 
 
