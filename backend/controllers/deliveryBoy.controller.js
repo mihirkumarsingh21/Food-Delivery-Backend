@@ -125,15 +125,92 @@ export const ownerAssignOrderFoodToDeliveryBoy = async (req, res) => {
     }
 }
  
-// export const deliveryBoyUpdaingOrderStatus = async (req, res) => {
-//     try {
-//         const updatedOrderStatus = await Order
-//     } catch (error) {
-//         res.status(500).json({
-//             success: false,
-//             message: `server error something went wrong: ${error}`
-//         })
-//         console.log(`error while delivery`);
-        
-//     }
-// }
+
+// Delivery boy fetching assigned orders.
+
+
+export const deliveryBoyFetchingAssignOrder = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const assignOrder = await Order.findOne({assignedTo: id});
+            const isValidDeliveryBoyId = mongoose.Types.ObjectId.isValid(id);
+            
+            if(!isValidDeliveryBoyId) return res.status(400).json({
+                success: false,
+                message: "Invalid delivery boy id."
+            })
+            
+            if(!assignOrder) return res.status({
+                success: false,
+                message: "any order are not assign to delivery boy."
+            })
+
+            res.status(200).json({
+                success: true,
+                assignOrder: assignOrder 
+            })
+
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: `server error something went wrong: ${error}`
+            })
+
+            console.log(`error while delivery boy fetching assign order: ${error}`);
+            
+        }
+}
+
+
+// Delivery boy updating ordered food status.
+
+export const deliveryBoyUpdatingOrderStatus = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { orderStatus } = req.body;
+            console.log(`order status: ${orderStatus}`);
+            
+            const isValidDeliveryBoyId = mongoose.Types.ObjectId.isValid(id);
+            if(!isValidDeliveryBoyId) return res.status(400).json({
+                success: false,
+                message: "Invalid delivery boy id."
+            })
+            
+
+        //    const updatedAssignOrderStatus = await Order.findOneAndUpdate(
+        //     { assignedTo: id },
+        //     { orderStatus },
+        //     { new: true }
+// );
+
+        const updatedAssignOrderStatus = await Order.updateOne({
+            assignedTo: id
+        }, {
+            $set: { orderStatus }
+        })
+
+        if (!updatedAssignOrderStatus) {
+        return res.status(400).json({
+            success: false,
+            message: "Failed to update order status"
+        });
+        }
+
+        res.status(200).json({
+        success: true,
+        message: "Order status updated successfully",
+        updatedAssignOrderStatus
+        });
+
+
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: `server error something went wrong : ${error}`
+            })
+            console.log(`error while delivery boy updating order food status :${error}`);
+            
+        }
+}
+
+
