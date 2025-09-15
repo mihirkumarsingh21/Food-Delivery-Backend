@@ -12,6 +12,10 @@ export const authUserAddingProductCart = async (req, res) => {
 
        const value = await cartSchemaValidation.validateAsync(req.body);
        const { userId, items:[{ productId, quantity }] } = value;
+       console.log(`productId: ${productId}`);
+       console.log(`quantity: ${quantity}`);
+       
+       
        const isValidUserId = mongoose.Types.ObjectId.isValid(userId);
        const isValidProductId = mongoose.Types.ObjectId.isValid(productId);
 
@@ -205,6 +209,14 @@ export const authUserUpdatingProductCart = async (req, res) => {
             })
          }
 
+         const cart = await Cart.findById(cartId);
+         if(cart.items.length == 0 || cart.totalAmount === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "empty cart cannot be updated."
+            })
+         }
+
          const updatedCart = await Cart.findByIdAndUpdate(cartId, { userId, items: [ {
             productId,
             price,
@@ -217,6 +229,8 @@ export const authUserUpdatingProductCart = async (req, res) => {
                 message: "failed to update cart details"
             })
          }
+
+
                   
          res.status(200).json({
             success: true,

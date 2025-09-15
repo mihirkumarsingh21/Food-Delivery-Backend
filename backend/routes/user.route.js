@@ -1,14 +1,14 @@
 import express from "express";
 import csrf from "csurf";
 import { registerUser, verifyEmail, loginUser, generateCsrfToken, logOutUser,  sendingPasswordResetToken, resetPassword } from "../controllers/user.controller.js";
-// import { authProtect } from "../middlewares/auth.middleware.js";
+
 
 const router = express.Router();
 
 
 const csrfProtection = csrf({ cookie: true });
 
-router.post("/register-user", registerUser);
+router.post("/register-user",  registerUser);
 router.post("/verify-email", verifyEmail);
 router.post("/login-user", loginUser);
 router.get("/csrf-token", csrfProtection, generateCsrfToken);
