@@ -20,10 +20,10 @@ export const authUserMakingOrder = async (req, res) => {
         message: "For making the order of food please provide an address."
       });
     }
-       
+    
         const { street, city, state, pincode, phone } = addresses[0];
   
-       const cart = await Cart.findById(cartId);
+       const cart = await Cart.findById(cartId);       
 
        if(!cart) return res.status(404).json({ success: false, message: "cart not found." });
 
@@ -47,20 +47,22 @@ export const authUserMakingOrder = async (req, res) => {
        })
        if(!orderedFood) return res.status(400).json({ success: false, message: "failed to create a order."});
 
+       
          orderedFood.orderHistory.push({
             orderStatus: orderedFood.orderStatus,
             changeAt: Date.now(),
             changeBy: "owner"
        })
+
+       await orderedFood.save();
+
+       await Cart.updateOne({ _id: cartId }, {$set: { 
+            items: [],
+            totalAmount: 0
+        }})
+
+  
        res.status(200).json({ success: true, message: "Your order successfully.", orderedFood: orderedFood });
-
-       await Cart.findByIdAndUpdate(cartId, {
-            $set: {
-                items: [],
-                totalAmount: 0
-            }
-       }, { new: true })
-
 
     } catch (error) {
         res.status(500).json({
@@ -75,6 +77,8 @@ export const ownerUpdatingOrderStatus = async ( req, res ) => {
             
             const { orderId } = req.params;
             const { requestStatus } = req.body;
+            console.log(`orderId: ${orderId}`);
+            
 
             const isValidOrderId = mongoose.Types.ObjectId.isValid(orderId);
             if(!isValidOrderId) return res.status(400).json({ success: false, message: "Invalid order id "});
@@ -82,6 +86,8 @@ export const ownerUpdatingOrderStatus = async ( req, res ) => {
             if(!requestStatus) return res.status(400).json({ success: false, message: "the order status field cannot be empty."});
 
             const order = await Order.findById(orderId);
+            console.log(`order: ${order}`);
+            
             if(!order) return res.status(404).json({
                 success: false,
                 message: "order not found."
