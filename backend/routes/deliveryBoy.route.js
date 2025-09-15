@@ -7,7 +7,7 @@ import { orderStatus } from "../controllers/order.controller.js";
 
 const router = express.Router();
 
-router.post("/adding-details", authProtect, addingDeliveryBoyDetails);
+router.post("/delivery-boy/adding-details", authProtect, addingDeliveryBoyDetails);
 router.patch("/role", authProtect, owner, givingDeliveryRole);
 router.patch("/orders/:orderId/assign", authProtect, owner, checkDeliveryRole, ownerAssignOrderFoodToDeliveryBoy);
 router.get("/deliveryBoy/:id/orders", authProtect, owner, checkDeliveryRole, deliveryBoyFetchingAssignOrder);
