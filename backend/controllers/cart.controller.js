@@ -210,7 +210,7 @@ export const authUserUpdatingProductCart = async (req, res) => {
          }
 
          const cart = await Cart.findById(cartId);
-         if(cart.items.length == 0 || cart.totalAmount === 0) {
+         if(cart.items.length == 0 || cart.totalAmount == 0) {
             return res.status(400).json({
                 success: false,
                 message: "empty cart cannot be updated."
