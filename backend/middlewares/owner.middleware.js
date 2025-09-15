@@ -3,7 +3,9 @@ import { User } from "../models/user.model.js"
 export const owner = async (req, res, next) => {
     try {
         
-       const authenticatedUser = await User.findById({ _id: req.user });
+       const authenticatedUser = await User.findById(req.user);
+       console.log(`req.user: ${req.user}`);
+       
        const restaurantOwner = await User.findOne({role: "owner"});  
     //    const deliveryBoy = await User.findOne({role: "delivery"});
 
