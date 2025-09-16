@@ -143,7 +143,7 @@ This project is live on Railway
 You can use this deployed URL to test the backend endpoints:  
 
  **In Postman** – Replace `localhost:5000` with the live URL.  
-   Example:  https://food-delivery-backend-production-0710.up.railway.app//api/v1/register-user
+   Example:  https://food-delivery-backend-production-0710.up.railway.app/api/v1/register-user
 
 ## 🔑 Environment Variables  
 
