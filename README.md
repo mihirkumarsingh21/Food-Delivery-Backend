@@ -202,7 +202,8 @@ All APIs are tested with **Postman** 🚀.
 
 
 - **Deployed API Endpoint**
-  ![Deployed API](./screenshots/deployed_api.png)
+ <img width="1366" height="768" alt="Screenshot 2025-09-16 145256" src="https://github.com/user-attachments/assets/c3d0fe98-c834-4d6a-8707-8873caf12e3d" />
+
 
 
 
@@ -216,14 +217,14 @@ cd food-delivery-app-backend](https://github.com/mihirkumarsingh21/Food-Delivery
 ## 🚀 Deployment
 
 This project is live on Railway
-👉 https://food-delivery-backend-production-0710.up.railway.app
+👉 https://food-delivery-backend-production-0711.up.railway.app
 
 ## 🌐 How to Use the URL
 
 You can use this deployed URL to test the backend endpoints:  
 
  **In Postman** – Replace `localhost:5000` with the live URL.  
-   Example:  https://food-delivery-backend-production-0710.up.railway.app/api/v1/register-user
+   Example:  https://food-delivery-backend-production-0711.up.railway.app/api/v1/register-user
 
 ## 🔑 Environment Variables  
 
