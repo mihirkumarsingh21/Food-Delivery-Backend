@@ -9,8 +9,9 @@ import authUserProfile from "./routes/user.profile.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
 import deliveryBoyRoute from "./routes/deliveryBoy.route.js";
-import rateLimit from "express-rate-limit";
+// import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import cors from "cors";
 
 
 
@@ -21,12 +22,32 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+
+app.set("trust proxy", 1);
+
+const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["PATCH", "POST", "PUT", "GET", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Headers",
+      // "Access-Control-Allow-Origin",
+    ],
+    credentials: true,
+    // optionsSuccessStatus: 200,
+  }),
+);
+
 app.use(helmet());
 
 
 const limiter = rateLimit({
     windowMs: 1000 * 60,
-    limit: 3,
+    limit: 100,
     statusCode: 429,
     message: "Too many requests, please try again later."
 })
