@@ -9,7 +9,7 @@ import authUserProfile from "./routes/user.profile.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
 import deliveryBoyRoute from "./routes/deliveryBoy.route.js";
-// import rateLimit from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
 
