@@ -9,7 +9,10 @@ import authUserProfile from "./routes/user.profile.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
 import deliveryBoyRoute from "./routes/deliveryBoy.route.js";
+<<<<<<< HEAD
 import reviewRoute from "./routes/review.route.js";
+=======
+>>>>>>> e2beb9c5c14743443b2de241c2c660f6a673b4db
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
