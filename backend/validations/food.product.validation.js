@@ -15,6 +15,15 @@ export const foodProductSchemaValidation = Joi.object({
     category: Joi.string()
     .required(),
 
+    ratingSum: Joi.number()
+    .default(0),
+
+    averagingRating: Joi.number()
+    .default(0),
+
+    totalRatings: Joi.number()
+    .default(0),
+    
     isAailable: Joi.boolean()
     .default(true)
 })
