@@ -18,9 +18,25 @@ const foodProductSchema = new mongoose.Schema({
     },
 
     category: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Category"
     },
+
+    ratingSum:{
+        type: Number,
+        default: 0
+    },
+
+    totalRatings: {
+        type: Number,
+        default: 0
+    },
+
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+
 
     isAvailable: {
         type: Boolean,
@@ -31,6 +47,7 @@ const foodProductSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 foodProductSchema.plugin(mongoosePaginate);
+foodProductSchema.indexes({name: 1}, { price: -1 }); // not working well.
 
 
 export const FoodProductItem = mongoose.model("Product", foodProductSchema);
