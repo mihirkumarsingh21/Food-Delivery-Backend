@@ -9,6 +9,7 @@ import authUserProfile from "./routes/user.profile.route.js";
 import cartRoute from "./routes/cart.route.js";
 import orderRoute from "./routes/order.route.js";
 import deliveryBoyRoute from "./routes/deliveryBoy.route.js";
+import reviewRoute from "./routes/review.route.js";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
@@ -62,6 +63,7 @@ app.use("/api/v1/food-items", foodItemsRoute);
 app.use("/api/v1/carts", cartRoute);
 app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/delivery", deliveryBoyRoute);
+app.use("/api/v1/reviews", reviewRoute);
 
 
 
