@@ -8,7 +8,7 @@ export const addingFoodItems = async (req, res) => {
 
         const value = await foodProductSchemaValidation.validateAsync(req.body);
 
-        const { name, description, price, category, isAvailable } = value;
+        const { name, description, price, category, averageRating, totalRatings, isAvailable } = value;
         console.log(`category : ${category}`);
         
         const addingFoodItems = await FoodProductItem.create({
@@ -16,6 +16,9 @@ export const addingFoodItems = async (req, res) => {
                 description,
                 price,
                 category,
+                ratingSum,
+                averageRating,
+                totalRatings,
                 isAvailable
         })
 
