@@ -16,6 +16,7 @@ All APIs are tested with **Postman** 🚀.
 ✅ Search & Filters (Category, Price, Name)  
 ✅ Role-based Access (User & Owner)  
 ✅ Delivery Boy Role Assignment & Order Handling <br>
+✅ Rating Functionality <br>
 ✅ API Testing with **Postman**  
 
 ---
@@ -124,9 +125,26 @@ All APIs are tested with **Postman** 🚀.
 
 </details>
 
+<details>
+
+
+<summary>⭐ Rating Routes</summary>
+
+- `POST /api/v1/reviews/add/:productId` → Add rating & comment (User)
+- `PATCH /api/v1/reviews/update/:reviewId` → Update existing rating (User)
+- `DELETE /api/v1/reviews/delete/:reviewId` → Delete rating & reset stats (User)
+- `GET /api/v1/reviews/product/:productId` → Get all ratings for a food item 
+</details>
 ---
 
 ## 📸 Screenshots
+
+### 📂 Project Structure
+
+<img width="1366" height="768" alt="Screenshot 2025-09-18 132619" src="https://github.com/user-attachments/assets/82958f5f-5c2a-443b-bb20-7cba35af3cb4" />
+<img width="1366" height="768" alt="Screenshot 2025-09-18 132550" src="https://github.com/user-attachments/assets/d81cb2ba-74fc-4b44-986a-f9f7807ee242" />
+
+
 
 ### 👤 User Authentication
 - **Register User**
@@ -159,6 +177,7 @@ All APIs are tested with **Postman** 🚀.
 ---
 
 ### Screenshot
+
 <img width="1366" height="768" alt="Screenshot 2025-09-16 124100" src="https://github.com/user-attachments/assets/54f8e05a-3006-4c76-993b-b911dc29f283" />
 
 <img width="1366" height="768" alt="Screenshot 2025-09-16 124150" src="https://github.com/user-attachments/assets/43b21b7e-d257-4f82-bdc6-1f8de4a21995" />
@@ -184,6 +203,16 @@ All APIs are tested with **Postman** 🚀.
 
 
 ---
+### ⭐ Rating Functionality
+- **Add Rating (Auth User)**
+<img width="1366" height="768" alt="Screenshot 2025-09-18 133707" src="https://github.com/user-attachments/assets/178a8b90-7905-43a6-a25c-fb8cfdf80f40" />
+
+- **Update Rating (Auth User)**
+<img width="1366" height="768" alt="Screenshot 2025-09-18 134546" src="https://github.com/user-attachments/assets/4bf048e6-be90-4a2f-b320-e9167d7197c8" />
+
+- **Delete Rating (Auth User)**
+
+<img width="1366" height="768" alt="Screenshot 2025-09-18 133809" src="https://github.com/user-attachments/assets/b783444d-9a28-4270-8eba-2113b48c78d1" />
 
 ### 🗄️ MongoDB Atlas
 - **Users Collection**
