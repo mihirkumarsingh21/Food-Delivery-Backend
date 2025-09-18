@@ -278,4 +278,65 @@ export const gettingAllRatingList = async (req, res) => {
     }
 }
 
+export const authUserSortingRatingFoodItems = async (req, res) => {
+    try {
+
+        const { productId } = req.params;
+        let {sort} = req.query;
+        let sortNum;
+        
+        if(sort == "latest") {
+             sortNum = sort = -1
+            
+        } else if(sort == "highest") {
+             sortNum = sort = -1;
+
+        } else if(sort == "oldest") {
+             sortNum = sort = 1;
+
+        } else if(sort == "lowest") {
+             sortNum = sort = 1;
+
+        }
+    
+                
+        if(!isValidObjectId(productId)) return res.status(400).json({
+            success: false,
+            message: "Invalid product id."
+        })
+
+        if(!sort || !sortNum) return res.status(400).json({
+            success: false,
+            message: "the sort or sortnum field cannot leave empty"
+        })
+
+    
+        const options = {
+            sort: { 
+                createdAt: sortNum,
+                rating: sortNum
+            }
+        }
+
+        const ratingFood = await Review.paginate({productId}, options);
+        if(!ratingFood) return res.status(404).json({
+            success: false,
+            message: "failed to sorting rating foods, please provide a correct product id."
+        })
+
+        res.status(200).json({
+            success: true,
+            sortedRatingFoods: ratingFood
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong: ${error}`
+        })
+        console.log(`error while auth user sorting rating food items: ${error}`);
+        
+    }
+}
+
 
