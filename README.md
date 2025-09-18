@@ -16,7 +16,17 @@ All APIs are tested with **Postman** 🚀.
 ✅ Search & Filters (Category, Price, Name)  
 ✅ Role-based Access (User & Owner)  
 ✅ Delivery Boy Role Assignment & Order Handling <br>
-✅ Rating Functionality <br>
+✅ Rating Functionality <br> 
+- Ratings and Review  <br> 
+- Add new ratings for ordered food  <br> 
+- Update or delete only your own rating <br> 
+- Prevent duplicate rating from same user  <br> 
+  ## 🔄 Sort rating by :
+🆕 Latest
+📜 Oldest
+💯 Highest rating
+⚡ Lowest rating <br>
+
 ✅ API Testing with **Postman**  
 
 ---
@@ -127,14 +137,25 @@ All APIs are tested with **Postman** 🚀.
 
 <details>
 
-
-<summary>⭐ Rating Routes</summary>
+<summary > ⭐ Rating Routes</summary>
 
 - `POST /api/v1/reviews/add/:productId` → Add rating & comment (User)
 - `PATCH /api/v1/reviews/update/:reviewId` → Update existing rating (User)
 - `DELETE /api/v1/reviews/delete/:reviewId` → Delete rating & reset stats (User)
 - `GET /api/v1/reviews/product/:productId` → Get all ratings for a food item 
 </details>
+
+<details>
+
+<summary> 🚦 Review Sorting Routes </summary>
+
+- `GET    /api/v1/reviews/sorting/:productId?sort=latest`  -> Sort reviews by latest (newest first)
+- `GET    /api/v1/reviews/sorting/:productId?sort=oldest`  -> Sort reviews by oldest (oldest first)
+- `GET    /api/v1/reviews/sorting/:productId?sort=highest` -> Sort reviews by highest rating
+- `GET    /api/v1/reviews/sorting/:productId?sort=lowest` -> Sort reviews by lowest rating
+
+</details>
+
 ---
 
 ## 📸 Screenshots
