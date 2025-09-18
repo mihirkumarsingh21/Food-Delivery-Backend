@@ -15,6 +15,9 @@ import helmet from "helmet";
 import cors from "cors";
 
 
+// import ratingRoute from "./routes/rating.route.js";
+
+
 
 dotenv.config();
 const app = express(); 
@@ -64,6 +67,7 @@ app.use("/api/v1/carts", cartRoute);
 app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/delivery", deliveryBoyRoute);
 app.use("/api/v1/reviews", reviewRoute);
+// app.use("/api/v1/ratings", ratingRoute);
 
 
 

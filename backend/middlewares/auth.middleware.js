@@ -42,6 +42,7 @@ export const authProtect = async (req, res, next) => {
         
         req.user = authUser._id        
         
+        
         next();
 
     } catch(error) {

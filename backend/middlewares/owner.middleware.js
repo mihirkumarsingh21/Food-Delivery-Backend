@@ -4,7 +4,6 @@ export const owner = async (req, res, next) => {
     try {
         
        const authenticatedUser = await User.findById(req.user);
-       console.log(`req.user: ${req.user}`);
        
        const restaurantOwner = await User.findOne({role: "owner"});  
     //    const deliveryBoy = await User.findOne({role: "delivery"});
@@ -16,9 +15,9 @@ export const owner = async (req, res, next) => {
             })
        }
        
-       console.log(`customer: ${authenticatedUser}`);
+    //    console.log(`customer: ${authenticatedUser}`);
        
-       console.log(`owner: ${restaurantOwner}`);
+    //    console.log(`owner: ${restaurantOwner}`);
        
 
        next();

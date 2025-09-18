@@ -8,8 +8,8 @@ import { ownerUpdatingOrderStatus, ownerListedOrderFood, ownerSortedOrderFood, o
 const router = express.Router();
 
 router.post("/make-order/:cartId", authProtect, authUserMakingOrder);
-router.patch("/:orderId/status",  owner, ownerUpdatingOrderStatus);
-router.patch("/:orderId/history", authProtect, owner, gettingOrderHistory);
+router.patch("/:orderId/status", authProtect, owner, ownerUpdatingOrderStatus);
+router.get("/:orderId/history", authProtect, owner, gettingOrderHistory);
 router.get("/my", authProtect, authUserGettingAllOrderFoodList);
 router.get("/search/my", authProtect, authUserGettingOrderFoodListBySearching);
 
