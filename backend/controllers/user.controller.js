@@ -19,6 +19,8 @@ export const registerUser = async (req, res) => {
        const { name, email, password, profilePic, role } = value;
 
        const user = await User.findOne({email});
+       console.log(`user: ${user}`);
+       
 
        if(user) {
         return res.status(400).json({
@@ -56,9 +58,11 @@ export const registerUser = async (req, res) => {
        })
 
         const response = await sendingSuccessRegEmail(regUser.email, regUser.name, regUser.verificationToken, `http:localhost:5173/verify-email`);
+        
 
             res.status(201).json({
-            success: response.success,
+            success: response.emailResponse,
+            regUser: regUser.password = null,
             message: "user register successfully please check your email for verify your email.",
             emailResponse: response.emailResponse.response
 

@@ -125,9 +125,7 @@ export const ownerAssignOrderFoodToDeliveryBoy = async (req, res) => {
     }
 }
  
-
 // Delivery boy fetching assigned orders.
-
 
 export const deliveryBoyFetchingAssignOrder = async (req, res) => {
         try {
@@ -161,14 +159,12 @@ export const deliveryBoyFetchingAssignOrder = async (req, res) => {
         }
 }
 
-
 // Delivery boy updating ordered food status.
 
 export const deliveryBoyUpdatingOrderStatus = async (req, res) => {
         try {
             const { id } = req.params;
             const { orderStatus } = req.body;
-            console.log(`order status: ${orderStatus}`);
             
             const isValidDeliveryBoyId = mongoose.Types.ObjectId.isValid(id);
             if(!isValidDeliveryBoyId) return res.status(400).json({
