@@ -1,17 +1,16 @@
 import mongoose from 'mongoose';
+import paginate from "mongoose-paginate-v2";
 
 const reviewSchema = new mongoose.Schema({
 
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            unique: true
         },
 
         productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "FoodProductItem",
-            unique: true
         },
 
         rating: {
@@ -28,5 +27,8 @@ const reviewSchema = new mongoose.Schema({
 
 }, {timestamps: true});
 
+reviewSchema.plugin(paginate);
+
 export const Review = mongoose.model("Review", reviewSchema);
+
 
