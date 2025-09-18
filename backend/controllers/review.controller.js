@@ -8,9 +8,18 @@ export const authUserGivingRatingOrderedfood = async ( req, res ) => {
     try {
 
         const { productId } = req.params;
-        const value  = await validationReviewSchema.validateAsync(req.body);
+        const value = await validationReviewSchema.validateAsync(req.body);
         
-        const { userId, rating, comment } = value;        
+        const { userId, rating, comment } = value;   
+        if(!userId || !rating) return res.status(400).json({
+            success: false,
+            message: "please provide a userId or rating."
+        })     
+
+        if(rating < 0) return res.save(400).json({
+            success: false,
+            message: "rating must be greater than 0."
+        })
 
         if(!isValidObjectId(productId)) return res.status(400).json({
                 success: false,
@@ -28,8 +37,6 @@ export const authUserGivingRatingOrderedfood = async ( req, res ) => {
             message: "you are not allowed to give any kind of rating, so you have to be order a food. OR your order is not delivered yet."
         })
 
- 
-
        const ratingTOFood = await Review.create({
         userId,
         productId,
@@ -46,7 +53,8 @@ export const authUserGivingRatingOrderedfood = async ( req, res ) => {
       orderedFood.ratingSum += rating;
       orderedFood.totalRatings += 1;
       orderedFood.averageRating = orderedFood.ratingSum / orderedFood.totalRatings;
-       
+
+
       res.status(200).json({
         success: true,
         orderedFoodRating: ratingTOFood,
@@ -66,17 +74,27 @@ export const authUserGivingRatingOrderedfood = async ( req, res ) => {
     }
 } 
 
-
 export const authUserGettingRatingOrderedfood = async (req, res) => {
     try {
-
+        const { page, limit } = req.query;
         const { productId } = req.params;
-        if(!isValidObjectId(productId)) return res.status(400).json({
+
+        if(page <= 0 || limit <= 0) return res.status(400).json({
             success: false,
-            message: "Invalid product id."
+            message: "page or limit must be greater than 0"
         })
 
-        const ratingFoods = await Review.findOne({productId});
+        if(!isValidObjectId(productId)) return res.status(400).json({
+            success: false,
+            message: "Invalid productId"
+        })
+
+        const pageNum = parseInt(page) || 1;
+        const limitNum = parseInt(limit) || 2;
+
+        const offSet = (pageNum - 1) * limitNum;
+       
+        const ratingFoods = await Review.find({productId}).skip(offSet).limit(limitNum).populate({path: ["userId"]});
         if(!ratingFoods) return res.status(404).json({
             success: false,
             message: "Rating food not found."
@@ -98,18 +116,15 @@ export const authUserGettingRatingOrderedfood = async (req, res) => {
     }
 }
 
-
 export const authUserUpdatingOurReview = async ( req, res ) => {
     try {
 
         const { reviewId } = req.params;
         const { rating }  = req.body;
-        console.log(`rating:${rating}`);
         
-
         if(!isValidObjectId(reviewId)) return res.status(400).json({
             success: false,
-            message: "Invalid review"
+            message: "Invalid review id"
         })
 
         if(!rating) return res.status(400).json({
@@ -128,6 +143,11 @@ export const authUserUpdatingOurReview = async ( req, res ) => {
             message: "old rating not found."
         })
 
+        if(oldRating.userId != req.user) return res.status(403).json({
+            success: false,
+            message: "you can only update your own rating not other."
+        })
+
         const updatedOrderedFoodRating = await Review.findByIdAndUpdate(reviewId, {rating}, {new: true});
         if(!updatedOrderedFoodRating) return res.status(400).json({
             success: false,
@@ -139,6 +159,7 @@ export const authUserUpdatingOurReview = async ( req, res ) => {
             success: false,
             message: "ordered food not found : not any food order by this id."
         })
+
 
         orderedFood.ratingSum = orderedFood.ratingSum - oldRating.rating + rating;
         
@@ -153,7 +174,6 @@ export const authUserUpdatingOurReview = async ( req, res ) => {
             orderedFoodUpdatedRating: orderedFood
         })
     
-
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -219,3 +239,43 @@ export const  authUserDeletingRatingOrderFood = async (req, res)  => {
         
     }
 }
+
+export const gettingAllRatingList = async (req, res) => {
+    try {
+        const {page = 1, limit = 2} = req.query;
+        
+        if(page <= 0 || limit <= 0) return res.status(400).json({
+            success: false,
+            message: "page or limit must be greater than 0"
+        })
+
+        if(!isValidObjectId(productId)) return res.status(400).json({
+            success: false,
+            message: "Invalid product id."
+        })
+
+        const offSet = ( page - 1 ) * limit;
+
+        const ratingList = await Review.findOne({productId}).skip(offSet).limit(limit).populate("productId");
+
+        if(!ratingList) return res.status(404).json({
+            success: false,
+            message: "rating not found."
+        })
+
+        res.status(200).json({
+            success: true,
+            ratingList: ratingList 
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: `server error something went wrong: ${error}`
+        })
+        console.log(`error while getting all rating list: ${error}`);
+        
+    }
+}
+
+
